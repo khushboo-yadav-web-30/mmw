@@ -288,6 +288,7 @@ html {
     align-items: center;
     z-index: 1;
     /* Hero section stays clear, no blur/scale effects */
+    /* Hero will go behind overlapping sections but remain visible and clear */
 }
 
 /* Video Background */
@@ -598,7 +599,8 @@ html {
     border-radius: 4rem 4rem 0 0;
     box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.2);
     will-change: transform, opacity;
-    transform: translateY(200px);
+    /* Initial state - section starts below hero */
+    transform: translateY(250px);
     opacity: 0;
 }
 

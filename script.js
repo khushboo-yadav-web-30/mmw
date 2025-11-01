@@ -924,52 +924,66 @@ function initOverlapAnimations() {
     function updateOverlap() {
         const scrolled = window.pageYOffset;
         const heroHeight = heroSection.offsetHeight;
-        const heroBottom = heroSection.offsetTop + heroHeight;
+        const heroTop = heroSection.offsetTop;
+        const heroBottom = heroTop + heroHeight;
         const viewportHeight = window.innerHeight;
         
         // Overlap sections animation - slide up over hero section
         overlapSections.forEach((section) => {
+            const sectionTop = section.offsetTop;
             const sectionRect = section.getBoundingClientRect();
             
-            // Calculate when section should start overlapping (when it reaches 30% from top)
-            const overlapTriggerPoint = heroBottom - viewportHeight * 0.3;
-            const overlapEndPoint = heroBottom;
+            // Calculate when section should start overlapping
+            // Start overlapping when scroll reaches 70% of hero height
+            const overlapStartPoint = heroTop + (heroHeight * 0.5); // Start at 50% of hero
+            const overlapEndPoint = heroBottom; // Fully overlapped at hero bottom
             
             // Calculate overlap progress (0 to 1)
             let overlapProgress = 0;
             
-            if (scrolled >= overlapTriggerPoint) {
-                overlapProgress = Math.min(1, (scrolled - overlapTriggerPoint) / (overlapEndPoint - overlapTriggerPoint));
+            if (scrolled >= overlapStartPoint && scrolled <= overlapEndPoint) {
+                // Between start and end
+                overlapProgress = (scrolled - overlapStartPoint) / (overlapEndPoint - overlapStartPoint);
+            } else if (scrolled > overlapEndPoint) {
+                // Past hero, fully overlapped
+                overlapProgress = 1;
             }
             
             if (overlapProgress > 0) {
                 // Smooth slide up animation
-                // Start from 200px below and slide to 0
-                const translateY = (1 - overlapProgress) * 200;
-                const opacity = Math.min(1, overlapProgress * 1.5); // Fade in faster
+                // Start from 250px below and slide to final position
+                const translateY = (1 - overlapProgress) * 250;
+                const opacity = Math.min(1, overlapProgress * 2); // Smooth fade in
                 
-                // Apply smooth transform
-                section.style.transform = `translateY(${translateY}px)`;
-                section.style.opacity = opacity;
-                section.style.transition = 'none'; // Disable CSS transition for manual control
+                // Apply smooth transform with easing
+                const easedProgress = overlapProgress < 0.5 
+                    ? 2 * overlapProgress * overlapProgress 
+                    : 1 - Math.pow(-2 * overlapProgress + 2, 3) / 2; // Ease-in-out curve
                 
-                // When fully overlapped
-                if (overlapProgress >= 0.8) {
-                    section.style.transform = 'translateY(0)';
-                    section.style.opacity = '1';
+                const finalTranslateY = (1 - easedProgress) * 250;
+                const finalOpacity = Math.min(1, easedProgress * 2);
+                
+                section.style.transform = `translateY(${finalTranslateY}px)`;
+                section.style.opacity = finalOpacity;
+                section.style.transition = 'none'; // Manual control for smoothness
+                
+                // Add active class when fully visible
+                if (overlapProgress >= 0.6) {
                     section.classList.add('overlap-active');
+                } else {
+                    section.classList.remove('overlap-active');
                 }
             } else {
-                // Before overlap starts - section is below
-                section.style.transform = 'translateY(200px)';
+                // Before overlap starts - section is below hero
+                section.style.transform = 'translateY(250px)';
                 section.style.opacity = '0';
                 section.style.transition = 'none';
                 section.classList.remove('overlap-active');
             }
         });
         
-        // Keep video and canvas visible (no fade) - hero section stays clear
-        // Only Product Categories section slides over hero smoothly
+        // Hero section stays clear - no blur, no scale, just goes behind
+        // Video and canvas remain fully visible
         
         ticking = false;
     }
@@ -987,22 +1001,11 @@ function initOverlapAnimations() {
     // Smooth scroll event listener with throttling
     window.addEventListener('scroll', onScroll, { passive: true });
     
-    // IntersectionObserver for fallback
-    const observerOptions = {
-        threshold: [0, 0.1, 0.3, 0.5, 0.8, 1],
-        rootMargin: '0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
-                entry.target.classList.add('overlap-active');
-            }
-        });
-    }, observerOptions);
-    
-    overlapSections.forEach(section => {
-        observer.observe(section);
+    // Resize handler to recalculate on window resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(updateOverlap, 100);
     });
 }
 

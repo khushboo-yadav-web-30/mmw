@@ -31,8 +31,6 @@ body {
     color: var(--gray-900);
     overflow-x: hidden;
     line-height: 1.6;
-    /* Extra padding-top for fixed hero section */
-    padding-top: 0;
 }
 
 /* Smooth Scrolling */
@@ -279,21 +277,20 @@ html {
 }
 
 /* ========================================
-   HERO SECTION
+   HERO SECTION (FIXED)
    ======================================== */
 .hero-section {
     min-height: 100vh;
+    height: 100vh;
     background: #000000;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    overflow: visible;
+    overflow: hidden;
     display: flex;
     align-items: center;
     z-index: 1;
-    /* Hero section fixed - will not scroll, stays in place */
-    /* Product Categories section will scroll over it */
 }
 
 /* Video Background */
@@ -597,21 +594,28 @@ html {
 /* Overlapping Section Animation */
 .section-overlap {
     position: relative;
-    margin-top: 100vh; /* Start after hero (which is 100vh) */
-    padding-top: 100px;
+    margin-top: 100vh; /* Start after fixed hero section */
+    padding-top: 150px;
     z-index: 10;
     background: white;
-    border-radius: 4rem 4rem 0 0;
-    box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.2);
+    border-radius: 3rem 3rem 0 0;
+    box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.3);
     will-change: transform, opacity;
-    /* Section will scroll over fixed hero section */
-    /* Initial opacity will be controlled by JavaScript */
+    /* Initial state - hidden until scrolled */
     opacity: 0;
+    transform: translateY(100px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* When visible (scrolled into view) */
+.section-overlap.overlap-active {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 @keyframes slideUpOverlap {
     from {
-        transform: translateY(150px);
+        transform: translateY(50px);
         opacity: 0;
     }
     to {
@@ -619,7 +623,6 @@ html {
         opacity: 1;
     }
 }
-
 
 @keyframes bounce {
     0%, 100% {
@@ -680,13 +683,9 @@ html {
     }
     
     .section-overlap {
-        margin-top: -80px;
-        padding-top: 150px;
+        margin-top: 100vh;
+        padding-top: 120px;
         border-radius: 2rem 2rem 0 0;
-    }
-    
-    .section-overlap.overlap-active {
-        margin-top: -80px;
     }
 }
 

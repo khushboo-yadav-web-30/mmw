@@ -914,39 +914,101 @@ function initExperienceCounter() {
 // OVERLAP ANIMATIONS ON SCROLL
 // ========================================
 function initOverlapAnimations() {
+    const heroSection = document.querySelector('.hero-section');
     const overlapSections = document.querySelectorAll('.section-overlap');
     
+    if (!heroSection || overlapSections.length === 0) return;
+    
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    
+    function updateOverlap() {
+        const scrolled = window.scrollY;
+        const heroHeight = heroSection.offsetHeight;
+        const heroBottom = heroSection.offsetTop + heroHeight;
+        const viewportTop = scrolled + window.innerHeight * 0.3; // Start overlap at 30% from top
+        
+        overlapSections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionRect = section.getBoundingClientRect();
+            
+            // Calculate how much the section should overlap
+            const overlapProgress = Math.max(0, Math.min(1, (scrolled - (heroBottom - window.innerHeight)) / heroHeight));
+            
+            if (overlapProgress > 0) {
+                // Section is starting to overlap
+                section.classList.add('overlap-visible');
+                
+                // Smooth overlap animation based on scroll position
+                if (overlapProgress < 0.5) {
+                    // Early stage: section is coming up
+                    const earlyProgress = overlapProgress * 2;
+                    const translateY = (1 - earlyProgress) * 100;
+                    section.style.transform = `translateY(${translateY}px)`;
+                    section.style.opacity = earlyProgress;
+                } else {
+                    // Later stage: section is overlapping
+                    section.classList.add('overlap-active');
+                    const lateProgress = (overlapProgress - 0.5) * 2;
+                    section.style.transform = `translateY(0)`;
+                    section.style.opacity = 1;
+                }
+            } else if (sectionRect.top < window.innerHeight && sectionRect.bottom > 0) {
+                // Section is in viewport, make it visible
+                section.classList.add('overlap-visible');
+                section.style.transform = 'translateY(0)';
+                section.style.opacity = 1;
+            }
+        });
+        
+        // Video fade on scroll
+        const heroVideo = document.querySelector('.hero-video');
+        if (heroVideo) {
+            const videoOpacity = Math.max(0, 1 - (scrolled / heroHeight) * 1.5);
+            heroVideo.style.opacity = videoOpacity * 0.3;
+        }
+        
+        // 3D Canvas fade on scroll
+        const hero3dCanvas = document.getElementById('hero3dCanvas');
+        if (hero3dCanvas) {
+            const canvasOpacity = Math.max(0, 0.6 - (scrolled / heroHeight) * 1.5);
+            hero3dCanvas.style.opacity = canvasOpacity;
+        }
+        
+        lastScrollY = scrolled;
+        ticking = false;
+    }
+    
+    function onScroll() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateOverlap);
+            ticking = true;
+        }
+    }
+    
+    // Initial check
+    updateOverlap();
+    
+    // Scroll event listener
+    window.addEventListener('scroll', onScroll, { passive: true });
+    
+    // Use IntersectionObserver for initial visibility
     const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
+        threshold: [0, 0.1, 0.3, 0.5, 0.7, 1],
+        rootMargin: '-20% 0px -20% 0px'
     };
     
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
+        entries.forEach(entry => {
             if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.style.animation = 'slideUpOverlap 1s ease-out forwards';
-                    entry.target.style.opacity = '1';
-                }, index * 100);
+                entry.target.classList.add('overlap-visible');
             }
         });
     }, observerOptions);
     
     overlapSections.forEach(section => {
-        section.style.opacity = '0';
         observer.observe(section);
     });
-    
-    // Video fade on scroll
-    const heroVideo = document.querySelector('.hero-video');
-    if (heroVideo) {
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const heroHeight = document.querySelector('.hero-section').offsetHeight;
-            const opacity = Math.max(0, 1 - (scrolled / heroHeight));
-            heroVideo.style.opacity = opacity * 0.3;
-        });
-    }
 }
 
 // ========================================

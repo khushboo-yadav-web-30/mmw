@@ -919,63 +919,76 @@ function initOverlapAnimations() {
     
     if (!heroSection || overlapSections.length === 0) return;
     
-    let lastScrollY = window.scrollY;
     let ticking = false;
     
     function updateOverlap() {
-        const scrolled = window.scrollY;
+        const scrolled = window.pageYOffset;
         const heroHeight = heroSection.offsetHeight;
         const heroBottom = heroSection.offsetTop + heroHeight;
-        const viewportTop = scrolled + window.innerHeight * 0.3; // Start overlap at 30% from top
         
-        overlapSections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionRect = section.getBoundingClientRect();
-            
-            // Calculate how much the section should overlap
-            const overlapProgress = Math.max(0, Math.min(1, (scrolled - (heroBottom - window.innerHeight)) / heroHeight));
-            
-            if (overlapProgress > 0) {
-                // Section is starting to overlap
-                section.classList.add('overlap-visible');
-                
-                // Smooth overlap animation based on scroll position
-                if (overlapProgress < 0.5) {
-                    // Early stage: section is coming up
-                    const earlyProgress = overlapProgress * 2;
-                    const translateY = (1 - earlyProgress) * 100;
-                    section.style.transform = `translateY(${translateY}px)`;
-                    section.style.opacity = earlyProgress;
-                } else {
-                    // Later stage: section is overlapping
-                    section.classList.add('overlap-active');
-                    const lateProgress = (overlapProgress - 0.5) * 2;
-                    section.style.transform = `translateY(0)`;
-                    section.style.opacity = 1;
-                }
-            } else if (sectionRect.top < window.innerHeight && sectionRect.bottom > 0) {
-                // Section is in viewport, make it visible
-                section.classList.add('overlap-visible');
-                section.style.transform = 'translateY(0)';
-                section.style.opacity = 1;
-            }
-        });
+        // Calculate scroll progress (0 to 1)
+        const scrollProgress = Math.min(1, Math.max(0, scrolled / (heroHeight * 0.7)));
         
-        // Video fade on scroll
-        const heroVideo = document.querySelector('.hero-video');
-        if (heroVideo) {
-            const videoOpacity = Math.max(0, 1 - (scrolled / heroHeight) * 1.5);
-            heroVideo.style.opacity = videoOpacity * 0.3;
+        // Hero section effects - scale down and fade as user scrolls
+        if (scrollProgress > 0.1) {
+            heroSection.classList.add('scroll-back');
+            const scale = 1 - (scrollProgress * 0.1); // Scale from 1 to 0.9
+            const opacity = 1 - (scrollProgress * 0.4); // Fade from 1 to 0.6
+            heroSection.style.transform = `scale(${scale})`;
+            heroSection.style.opacity = opacity;
+        } else {
+            heroSection.classList.remove('scroll-back');
+            heroSection.style.transform = 'scale(1)';
+            heroSection.style.opacity = '1';
         }
         
-        // 3D Canvas fade on scroll
+        // Video and 3D canvas fade
+        const heroVideo = document.querySelector('.hero-video');
         const hero3dCanvas = document.getElementById('hero3dCanvas');
+        
+        if (heroVideo) {
+            const videoOpacity = Math.max(0, (1 - scrollProgress * 2) * 0.3);
+            heroVideo.style.opacity = videoOpacity;
+        }
+        
         if (hero3dCanvas) {
-            const canvasOpacity = Math.max(0, 0.6 - (scrolled / heroHeight) * 1.5);
+            const canvasOpacity = Math.max(0, (1 - scrollProgress * 2) * 0.6);
             hero3dCanvas.style.opacity = canvasOpacity;
         }
         
-        lastScrollY = scrolled;
+        // Overlap sections animation
+        overlapSections.forEach((section, index) => {
+            const sectionTop = section.offsetTop;
+            const sectionRect = section.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+            
+            // Start overlapping when section is 30% from top of viewport
+            const overlapStart = heroBottom - viewportHeight * 0.3;
+            const overlapEnd = heroBottom;
+            const overlapProgress = Math.min(1, Math.max(0, (scrolled - overlapStart) / (overlapEnd - overlapStart)));
+            
+            if (overlapProgress > 0) {
+                // Calculate smooth translateY for overlap effect
+                const translateY = (1 - overlapProgress) * 150; // Start 150px below, move to 0
+                const sectionOpacity = Math.min(1, overlapProgress * 1.2); // Fade in
+                
+                section.style.transform = `translateY(${translateY}px)`;
+                section.style.opacity = sectionOpacity;
+                
+                // Add active class when fully overlapped
+                if (overlapProgress > 0.7) {
+                    section.classList.add('overlap-active');
+                } else {
+                    section.classList.remove('overlap-active');
+                }
+            } else {
+                // Before overlap starts
+                section.style.transform = 'translateY(150px)';
+                section.style.opacity = '0';
+                section.classList.remove('overlap-active');
+            }
+        });
+        
         ticking = false;
     }
     
@@ -989,19 +1002,19 @@ function initOverlapAnimations() {
     // Initial check
     updateOverlap();
     
-    // Scroll event listener
+    // Smooth scroll event listener
     window.addEventListener('scroll', onScroll, { passive: true });
     
-    // Use IntersectionObserver for initial visibility
+    // Also use IntersectionObserver as fallback
     const observerOptions = {
-        threshold: [0, 0.1, 0.3, 0.5, 0.7, 1],
-        rootMargin: '-20% 0px -20% 0px'
+        threshold: [0, 0.2, 0.5, 0.8, 1],
+        rootMargin: '-10% 0px -10% 0px'
     };
     
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('overlap-visible');
+            if (entry.isIntersecting && entry.intersectionRatio > 0.2) {
+                entry.target.classList.add('overlap-active');
             }
         });
     }, observerOptions);

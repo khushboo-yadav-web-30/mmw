@@ -14,7 +14,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@600;800&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
@@ -102,131 +102,54 @@
         </nav>
     </header>
 
-    <!-- Hero Section with Video Background -->
-    <section id="home" class="hero-section position-relative overflow-hidden">
-        <!-- Video Background -->
-        <div class="hero-video-wrapper">
-            <video class="hero-video" autoplay muted loop playsinline>
-                <source src="https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4" type="video/mp4">
-                <!-- Fallback video or image -->
-            </video>
-            <div class="hero-video-overlay"></div>
-        </div>
-        
-        <!-- 3D Gradient Effect Background -->
-        <div class="hero-3d-gradient">
-            <canvas id="hero3dCanvas"></canvas>
-        </div>
-        
-        <!-- Floating Orbs -->
-        <div class="hero-gradient-orb hero-orb-1"></div>
-        <div class="hero-gradient-orb hero-orb-2"></div>
-        <div class="hero-grid"></div>
-        
-        <!-- Hero Content -->
-        <div class="container position-relative hero-content-wrapper">
-            <div class="row align-items-center min-vh-100">
-                <div class="col-lg-6 fade-in-left">
-                    <!-- Showreel Button (Top Left) -->
-                    <div class="hero-showreel-btn mb-4">
-                        <button class="showreel-button" id="showreelBtn">
-                            <div class="showreel-icon">
-                                <i class="bi bi-play-fill"></i>
-                            </div>
-                            <span>SHOWREEL</span>
-                        </button>
-                    </div>
-                    
-                    <!-- Experience Counter (Top Right) -->
-                    <div class="hero-experience-counter">
-                        <div class="experience-number">
-                            <span id="expCounter">25</span>+
-                            <i class="bi bi-arrow-up experience-arrow"></i>
-                        </div>
-                        <div class="experience-text">years of experience</div>
-                    </div>
-                    
-                    <!-- Main Headline -->
-                    <h1 class="hero-title mb-4">
-                        Industrial Machinery
-                        <br>
-                        <span class="gradient-text">Driving Business</span>
-                        <br>
-                        Excellence
-                    </h1>
-                    
-                    <!-- Sub-headline -->
-                    <p class="hero-subtitle mb-5">
-                        PARTNER WITH DEDICATED EXPERTS WHO 'GET' YOUR PRODUCTION NEEDS
-                    </p>
-                    
-                    <!-- CTA Buttons -->
-                    <div class="d-flex flex-column flex-sm-row gap-3 mb-5">
-                        <button class="btn btn-gradient-danger btn-lg btn-hero-cta">
-                            Explore Products
-                            <i class="bi bi-arrow-right ms-2"></i>
-                        </button>
-                        <button class="btn btn-outline-light btn-lg btn-hero-secondary">
-                            <i class="bi bi-play-circle me-2"></i>
-                            Watch Demo
-                        </button>
-                    </div>
-                    
-                    <!-- Stats Badges -->
-                    <div class="hero-badges">
-                        <div class="badge-item">
-                            <span class="pulse-dot-green me-2"></span>
-                            ISO 9001:2015 Certified
-                        </div>
-                        <div class="badge-item">
-                            <span class="pulse-dot-green me-2"></span>
-                            500+ Happy Clients
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-6 text-end">
-                    <!-- Large CTA Button (Bottom Right) -->
-                    <div class="hero-large-cta fade-in-right">
-                        <button class="large-cta-button" id="getStartedBtn">
-                            <div class="large-cta-icon">
-                                <i class="bi bi-arrow-up"></i>
-                            </div>
-                            <div class="large-cta-text">GET STARTED</div>
-                        </button>
-                    </div>
-                </div>
+    <!-- Hero Section (Same as index_bootstrap.html) -->
+    <header id="home" class="hero hero-dark py-5 py-lg-6">
+      <div class="hero-bg" aria-hidden="true">
+        <video
+          class="hero-video"
+          src="https://api.wezom.com/storage/settings/rubHdoO2Di6QqoTUwYIySpbKtzgUjtaXaB3DtGlT.mp4"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="auto"
+          webkit-playsinline
+          x5-playsinline
+        ></video>
+        <div class="hero-overlay"></div>
+      </div>
+      <div class="container position-relative">
+        <div class="row justify-content-center align-items-center">
+          <div class="col-lg-8 text-center">
+            <div class="d-flex flex-column flex-lg-row align-items-center justify-content-center gap-4">
+              <div>
+                <h1 class="display-4 fw-extrabold text-balance text-white">
+              Industrial Machinery<br/>Driving Business Growth
+            </h1>
+                <p class="lead text-white-50 mt-3 mb-0">
+                  Partner with dedicated IT experts who 'get' your business.
+            </p>
             </div>
-        </div>
-        
-        <!-- Scroll Indicator -->
-        <div class="hero-scroll-indicator">
-            <div class="scroll-indicator-line"></div>
-            <span class="scroll-indicator-text">Scroll Down</span>
-        </div>
-        
-        <!-- Wave Separator -->
-        <div class="hero-wave-separator">
-            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
-            </svg>
-        </div>
-    </section>
-    
-    <!-- Hero Modal for Showreel Video -->
-    <div class="modal fade" id="showreelModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content bg-dark border-0">
-                <div class="modal-header border-0">
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+              <div class="flex-shrink-0">
+                <a href="#contact" class="hero-cta-circle">GET STARTED<span class="cta-arrow" aria-hidden="true">↗</span></a>
                 </div>
-                <div class="modal-body p-0">
-                    <video class="w-100" controls autoplay>
-                        <source src="https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
+              </div>
+          </div>
         </div>
+      </div>
+    </header>
+
+    <div class="hero-ui-layer">
+      <div class="container position-relative">
+        <a href="#cases" class="showreel-badge">
+          <span class="play-dot" aria-hidden="true">▶</span>
+          <span class="label">Showreel</span>
+        </a>
+        <div class="kpi-badge">
+          <div class="kpi-value">25+ <span class="arrow" aria-hidden="true">↗</span></div>
+          <div class="kpi-caption">years of experience</div>
+        </div>
+      </div>
     </div>
 
     <!-- Category Section with Overlap Animation -->

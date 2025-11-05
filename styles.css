@@ -2557,13 +2557,32 @@ body > .hero {
 /* ========================================
    FAQ SECTION
    ======================================== */
+/* FAQ Section - Ensure full visibility */
+section:has(.faq-accordion),
+section.section-overlap:has(.faq-accordion) {
+    padding-bottom: 6rem !important;
+    overflow: visible !important;
+    min-height: auto !important;
+}
+
+section:has(.faq-accordion) .container {
+    overflow: visible !important;
+    padding-bottom: 2rem;
+}
+
+.faq-accordion {
+    overflow: visible !important;
+    width: 100%;
+}
+
 .faq-accordion .accordion-item {
     background: var(--gray-50);
     border: 1px solid var(--gray-200);
     border-radius: 0.75rem !important;
     margin-bottom: 1rem;
-    overflow: hidden;
+    overflow: visible !important;
     transition: border-color 0.3s ease;
+    min-height: auto;
 }
 
 .faq-accordion .accordion-item:hover {
@@ -2577,6 +2596,10 @@ body > .hero {
     background: transparent;
     color: var(--gray-900);
     transition: color 0.3s ease;
+    white-space: normal;
+    word-wrap: break-word;
+    text-align: left;
+    line-height: 1.5;
 }
 
 .faq-accordion .accordion-button:not(.collapsed) {
@@ -2589,10 +2612,69 @@ body > .hero {
     box-shadow: none;
 }
 
+.faq-accordion .accordion-collapse {
+    overflow: visible !important;
+    transition: height 0.35s ease;
+}
+
 .faq-accordion .accordion-body {
     padding: 0 1.5rem 1.5rem;
     color: var(--gray-600);
     line-height: 1.8;
+    overflow: visible !important;
+    white-space: normal;
+    word-wrap: break-word;
+    max-height: none !important;
+}
+
+/* Ensure FAQ columns display properly */
+.faq-accordion-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* FAQ Row and Columns */
+.row:has(.faq-accordion) {
+    overflow: visible !important;
+    align-items: flex-start;
+}
+
+.col-md-6:has(.faq-accordion) {
+    overflow: visible !important;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Responsive adjustments for FAQ */
+@media (min-width: 768px) {
+    .faq-accordion .accordion-item {
+        margin-bottom: 1.25rem;
+    }
+    
+    .faq-accordion .accordion-body {
+        padding: 0 1.5rem 1.75rem;
+    }
+    
+    section:has(.faq-accordion) {
+        padding-bottom: 8rem !important;
+    }
+}
+
+@media (min-width: 992px) {
+    section:has(.faq-accordion) {
+        padding-bottom: 8rem !important;
+    }
+    
+    .faq-accordion .accordion-body {
+        padding: 0 1.75rem 2rem;
+        font-size: 1rem;
+    }
+    
+    .faq-accordion .accordion-button {
+        padding: 1.75rem;
+        font-size: 1.25rem;
+    }
 }
 
 /* ========================================
